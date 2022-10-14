@@ -46,12 +46,12 @@ app.post("/login", async (req, res) => {
     return res.redirect("/");
 });
 
-// app.use((req, res, next) => {
-//     //@ts-ignore
-//     if(!req.session.authenticated) return res.redirect("/login");
+app.use((req, res, next) => {
+    //@ts-ignore
+    if(!req.session.authenticated) return res.redirect("/login");
 
-//     next();
-// });
+    next();
+});
 
 app.get("/", async (req, res) => {
     res.render("overview", {
