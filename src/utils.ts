@@ -60,7 +60,7 @@ export const getCPUModel = () => {
 //     });
 // }
 
-export const getCPUUsage = async () => {
+export const getCPUUsage = async (): Promise<number> => {
     return await new Promise((resolve, reject) => {
         exec(`grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage "%"}'`, (err, stdout, stderr) => {
             if(stdout) {

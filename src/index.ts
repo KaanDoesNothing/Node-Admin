@@ -4,7 +4,9 @@ import path from "path";
 import socketIO from "socket.io";
 import { getHardDrives, getMemory, calculatePercentage, getCPUUsage, getDistro, getCPUModel, getUptime, getProcesses, checkPassword } from "./utils";
 import * as pty from "node-pty";
+import fs from "fs/promises";
 import expressSession from "express-session";
+import "./background";
 
 const app = express();
 const server = http.createServer(app);
@@ -80,6 +82,24 @@ app.get("/terminal", (req, res) => {
 
 app.get("/terminal/iframe", (req, res) => {
     res.render("terminal_iframe");
+});
+
+app.get("/file_manager", async (req, res) => {
+    const directory = req.query.path?.toString() || "/";
+    
+    const fetched_directory = await fs.readdir(directory);
+
+    const directory_content = await Promise.all(fetched_directory.map(async (row: string) => {
+        const type = await fs.lstat(path.join(directory, row));
+
+        return {
+            name: row,
+            isFile: type.isFile(),
+            isFolder: type.isDirectory()
+        }
+    }));
+
+    return res.render("file_manager", {directory, directory_content});
 });
 
 const wrap = (middleware: any) => (socket: any, next: any) => middleware(socket.request, {}, next);

@@ -1,0 +1,36 @@
+extends layouts/main
+
+block body
+    link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css", rel="stylesheet", type="text/css")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js")
+    div(class="grid place-items-center mt-10")
+        div(class="w-2/3").card.bg-base-300
+            div.card-body.overflow-scroll
+                label.card-title > #{directory}
+                
+                div.mx-5.align-start
+                    for row in directory_content.filter(row => row.isFolder)
+                        a(href=`/file_manager?path=${directory}/${row.name}`, type="folder")
+                            i.fa-solid.fa-folder
+                            label.cursor-pointer  #{row.name}
+                        br
+                    for row in directory_content.filter(row => row.isFile)
+                        a(href=`/`, type="file", path=`${directory}/${row.name}`)
+                            i.fa-solid.fa-file
+                            label.cursor-pointer  #{row.name}
+                        br
+                    
+    script.
+        const buttons = document.querySelectorAll("a[type='file']");
+
+        for (let i in buttons) {
+            const button = buttons[i];
+
+            console.log(button)
+
+            button.onclick = (e) => {
+                e.preventDefault();
+
+                window.open(`${window.origin}/terminal/iframe?action=nano ${button.attributes.path.value}`, 'popUpWindow','height=720,width=1280,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+            }
+        }

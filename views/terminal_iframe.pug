@@ -9,7 +9,7 @@ html(lang="en")
         script(src="https://cdn.jsdelivr.net/npm/socket.io-client@4.5.2/dist/socket.io.min.js")
         link(href="https://cdn.jsdelivr.net/npm/xterm@5.0.0/css/xterm.css", type="text/css", rel="stylesheet")
         title Terminal
-    body(style="overflow: hidden;")
+    body(style="overflow: hidden; background-color: black;")
         
 
         div(id="terminal")
@@ -39,3 +39,9 @@ html(lang="en")
             }
 
             window.onresize = resize;
+
+            const action = new URLSearchParams(window.location.search).get("action");
+            if(action) {
+                socket.emit("message", {data: action});
+                socket.emit("message", {data: "\n"})
+            }
