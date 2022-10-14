@@ -144,7 +144,6 @@ export const userExists = async (username: string) => {
 export const checkPassword = async (username: string, password: string) => {
     return await new Promise((resolve, reject) => {
         passwd.checkPassword(username, password, (err: Error, res: boolean) => {
-            console.log(err, res);
             if(err) reject(false);
 
             resolve(res);

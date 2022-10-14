@@ -2,12 +2,25 @@ import express from "express";
 import http from "http";
 import path from "path";
 import socketIO from "socket.io";
-import { getHardDrives, getMemory, calculatePercentage, getCPUUsage, getDistro, getCPUModel, getUptime, getProcesses } from "./utils";
+import { getHardDrives, getMemory, calculatePercentage, getCPUUsage, getDistro, getCPUModel, getUptime, getProcesses, checkPassword } from "./utils";
 import * as pty from "node-pty";
+import expressSession from "express-session";
 
 const app = express();
 const server = http.createServer(app);
 const socket = new socketIO.Server(server);
+
+app.use(express.json({}));
+app.use(express.urlencoded({extended: true}));
+
+const sessionMiddleware = expressSession({
+    secret: "hmmm",
+    resave: false,
+    saveUninitialized: false
+});
+
+app.use(sessionMiddleware);
+  
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "../views"));
@@ -15,6 +28,30 @@ app.set("views", path.join(__dirname, "../views"));
 app.locals.modules = {
     calculatePercentage
 }
+
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", async (req, res) => {
+    const {user, password} = req.body;
+
+    const isCorrect = await checkPassword(user, password);
+
+    if(!isCorrect) return res.render("login", {error: "Invalid user | password"});
+
+    //@ts-ignore
+    req.session.authenticated = true;
+    
+    return res.redirect("/");
+});
+
+// app.use((req, res, next) => {
+//     //@ts-ignore
+//     if(!req.session.authenticated) return res.redirect("/login");
+
+//     next();
+// });
 
 app.get("/", async (req, res) => {
     res.render("overview", {
@@ -43,6 +80,20 @@ app.get("/terminal", (req, res) => {
 
 app.get("/terminal/iframe", (req, res) => {
     res.render("terminal_iframe");
+});
+
+const wrap = (middleware: any) => (socket: any, next: any) => middleware(socket.request, {}, next);
+
+socket.use(wrap(sessionMiddleware));
+
+socket.use((socket, next) => {
+    //@ts-ignore
+    const session = socket.request.session;
+    if (session && session.authenticated) {
+      next();
+    } else {
+      next(new Error("unauthorized"));
+    }
 });
 
 socket.on("connection", (socket_client) => {

@@ -1,0 +1,29 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Node Admin
+        link(href="https://cdn.jsdelivr.net/npm/daisyui@2.6.0/dist/full.css", rel="stylesheet", type="text/css")
+        script(src="https://cdn.tailwindcss.com")
+    body
+        .flex.justify-center.mt-10
+            .card.w-80.bg-base-100.shadow-xl.m-1.text-primary-content
+                .card-body
+                    h2.card-title Login
+                    if error
+                        br
+                        div.toast.toast-top.toast-center
+                            div.alert.alert-warning
+                                div
+                                    span=error
+                    form.form-control(action="/login" method="post")
+                        label.label
+                            span.label-text User
+                        input.input.input-bordered.w-full.max-w-xs(type="text" name="user")
+                        label.label
+                            span.label-text Password
+                        input.input.input-bordered.w-full.max-w-xs(type="password" name="password")
+                        .card-actions.text-center.mt-2
+                            button.btn.btn-ghost.btn-block(type="submit") Login

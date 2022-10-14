@@ -8,12 +8,14 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "node-pty": "^0.10.1",
     "passwd-linux": "^2.0.0",
     "pug": "^3.0.2",
     "socket.io": "^4.5.2"
   },
   "devDependencies": {
+    "@types/express-session": "^1.17.5",
     "typescript": "^4.8.4"
   }
 }
