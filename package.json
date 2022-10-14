@@ -1,0 +1,14 @@
+{
+  "name": "WebAdmin",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-ws": "^5.0.2",
+    "node-pty": "^0.10.1",
+    "passwd-linux": "^2.0.0",
+    "pug": "^3.0.2",
+    "socket.io": "^4.5.2"
+  }
+}

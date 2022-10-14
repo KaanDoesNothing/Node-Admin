@@ -1,0 +1,42 @@
+extends layouts/main
+
+block body
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.41/vue.global.min.js")
+
+    div(id="terminalsHolder").overflow-hidden
+        div.tabs.tabs-boxed
+            a(class="tab", v-for="terminal in terminals", @click="selectTerminal(terminal)") Terminal {{terminals.indexOf(terminal) + 1}}
+            a(@click="removeTerminal").tab -
+            a(@click="addTerminal").tab +
+
+        iframe(src="/terminal/iframe", class="w-full min-h-screen overflow-y-hidden rounded" v-for="terminal in terminals" v-show="terminal === current_terminal")
+
+    script.
+        Vue.createApp({
+            data() {
+                return {
+                    current_terminal: 0,
+                    terminals: []
+                }
+            },
+            mounted() {
+                this.addTerminal();
+            },
+            methods: {
+                addTerminal() {
+                    const id = Date.now();
+                    if(this.terminals.length < 1) this.current_terminal = id;
+                    this.terminals.push(id);
+                },
+                selectTerminal(id) {
+                    this.current_terminal = id;
+                },
+                removeTerminal() {
+                    this.terminals.pop();
+                    
+                    if(this.terminals.length > 0) {
+                        this.current_terminal = this.terminals[0];
+                    }
+                }
+            }
+        }).mount("#terminalsHolder");

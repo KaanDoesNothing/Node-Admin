@@ -1,0 +1,41 @@
+extends layouts/main
+
+block body
+    div(class="grid place-items-center mt-10")
+            div(class="w-2/3").card.bg-base-300
+                div.card-body
+                    label.card-title System Information
+                    table.w-full
+                        thead
+                            tr
+                                th
+                                th
+                        tbody
+                            tr
+                                th CPU
+                                td #{cpu.model}
+                            tr
+                                th OS
+                                td #{system.distro}
+                            tr
+                                th Uptime
+                                td #{system.uptime}
+    div.flex.justify-center.mt-10.items-stretch
+            div(class="w-1/2").card.bg-base-300.mr-5
+                div.card-body
+                    label.card-title Storage
+                    for row in hard_drives
+                        label=row.name
+                        progress(value=modules.calculatePercentage(row.used, row.size), max="100", class="progress progress-accent w-56")
+                        br
+            div(class="w-1/2").card.bg-base-300
+                div.card-body
+                    label.card-title Usage
+                    label CPU
+                    progress(value=cpu.usage, max="100", class="progress progress-accent w-56")
+                    br
+
+                    for row in memory
+                        label=row.name
+                        progress(value=modules.calculatePercentage(row.used, row.size), max="100", class="progress progress-accent w-56")
+                        br

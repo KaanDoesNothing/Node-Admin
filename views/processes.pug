@@ -1,0 +1,27 @@
+extends layouts/main
+
+block body
+    div(class="grid place-items-center mt-10")
+        div(class="w-2/3").card.bg-base-300
+            div.card-body
+                label.card-title Processes
+                table.w-full
+                    thead
+                        tr
+                            th User
+                            th PID
+                            th CPU Usage
+                            th Memory Usage
+                            th Start
+                            th Time
+                            th Command
+                    tbody
+                        for process in processes
+                            tr
+                                th=process.user
+                                th=process.pid
+                                th #{process.cpu}%
+                                th #{process.memory}%
+                                th=process.start
+                                th=process.time
+                                th=process.command

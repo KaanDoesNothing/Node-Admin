@@ -1,0 +1,41 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        script(src="https://cdn.jsdelivr.net/npm/xterm@5.0.0/lib/xterm.min.js")
+        script(src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.6.0/lib/xterm-addon-fit.min.js")
+        script(src="https://cdn.jsdelivr.net/npm/socket.io-client@4.5.2/dist/socket.io.min.js")
+        link(href="https://cdn.jsdelivr.net/npm/xterm@5.0.0/css/xterm.css", type="text/css", rel="stylesheet")
+        title Terminal
+    body(style="overflow: hidden;")
+        
+
+        div(id="terminal")
+        script.
+            const socket = new io();
+
+            const terminal = new Terminal({rows: 40, cols: 40});
+            const fitAddon = new FitAddon.FitAddon();
+            terminal.loadAddon(fitAddon);
+            terminal.open(document.querySelector("#terminal"));
+
+            resize();
+            
+            terminal.onData((e) => {
+                socket.emit("message", {data: e});
+            });
+
+            socket.on("message", (e) => {
+                if(e.data) {
+                    terminal.write(e.data);
+                }
+            });
+
+            function resize() {
+                fitAddon.fit();
+                socket.emit("message", {size: {cols: terminal.cols, rows: terminal.rows}});
+            }
+
+            window.onresize = resize;
