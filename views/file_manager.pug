@@ -6,7 +6,7 @@ block body
     div(class="grid place-items-center mt-10")
         div(class="w-2/3").card.bg-base-300
             div.card-body.overflow-scroll
-                label.card-title > #{directory}
+                label.card-title < #{directory} >
                 
                 div.mx-5.align-start
                     for row in directory_content.filter(row => row.isFolder)
@@ -41,7 +41,7 @@ block body
                 }else {
                     if(button.attributes.type.value === "file") {
                         e.preventDefault();
-                        
+
                         window.open(`${window.origin}/terminal/iframe?action=nano ${button.attributes.path.value}`, 'popUpWindow','height=720,width=1280,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
                     }
                 }
