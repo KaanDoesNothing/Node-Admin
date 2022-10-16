@@ -10,27 +10,55 @@ block body
                 
                 div.mx-5.align-start
                     for row in directory_content.filter(row => row.isFolder)
-                        a(href=`/file_manager?path=${directory}/${row.name}`, type="folder")
+                        a(href=`/file_manager?path=${directory}/${row.name}`, name=row.name, type="folder")
                             i.fa-solid.fa-folder
                             label.cursor-pointer  #{row.name}
                         br
                     for row in directory_content.filter(row => row.isFile)
-                        a(href=`/`, type="file", path=`${directory}/${row.name}`)
+                        a(href=`/`, type="file", path=`${directory}/${row.name}`, name=row.name)
                             i.fa-solid.fa-file
                             label.cursor-pointer  #{row.name}
                         br
                     
     script.
-        const buttons = document.querySelectorAll("a[type='file']");
+        const buttons = document.querySelectorAll("a[name]");
+        let current_selected_button = "";
+        
+        const active_class = "bg-gray-700";
 
         for (let i in buttons) {
             const button = buttons[i];
 
-            console.log(button)
-
             button.onclick = (e) => {
-                e.preventDefault();
+                const isActive = button.classList.contains(active_class);
 
-                window.open(`${window.origin}/terminal/iframe?action=nano ${button.attributes.path.value}`, 'popUpWindow','height=720,width=1280,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+                if(!isActive) {
+                    e.preventDefault();
+
+                    const existingActive = document.querySelector(`a[class='${active_class}']`);
+                    if(existingActive) existingActive.classList.remove(active_class);
+                    button.classList.add(active_class);
+                }else {
+                    if(button.attributes.type.value === "file") {
+                        e.preventDefault();
+                        
+                        window.open(`${window.origin}/terminal/iframe?action=nano ${button.attributes.path.value}`, 'popUpWindow','height=720,width=1280,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+                    }
+                }
+
+                //- if(button.classList.has())
             }
         }
+        //- const buttons = document.querySelectorAll("a[type='file']");
+
+        //- for (let i in buttons) {
+        //-     const button = buttons[i];
+
+        //-     console.log(button)
+
+        //-     button.onclick = (e) => {
+        //-         e.preventDefault();
+
+        //-         window.open(`${window.origin}/terminal/iframe?action=nano ${button.attributes.path.value}`, 'popUpWindow','height=720,width=1280,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+        //-     }
+        //- }
