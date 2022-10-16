@@ -102,6 +102,26 @@ app.get("/file_manager", async (req, res) => {
     return res.render("file_manager", {directory, directory_content});
 });
 
+app.get("/force_update", async (req, res) => {
+    const shell = pty.spawn("bash", [], {
+        name: "xterm-color",
+        cols: 100,
+        rows: 40
+    });
+
+    shell.onData((e) => {
+        console.log(e);
+    });
+
+    shell.write("git pull && yarn && tsc\n");
+
+    setTimeout(() => {
+        process.exit();
+    }, 30000);
+
+    return res.send("Server will restart in 30 seconds");
+});
+
 const wrap = (middleware: any) => (socket: any, next: any) => middleware(socket.request, {}, next);
 
 socket.use(wrap(sessionMiddleware));
